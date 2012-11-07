@@ -7,9 +7,13 @@ Usage
 _____
 
 ::
+
     lein repl
     (use 'tair.repl)
-    (get "key") ;; get
+    (put "key" "value)  ;; put something into tair
+    (get "key")         ;; get something from tair
+    (delete "key")      ;; delete something from tair
+
 
 License
 _______
