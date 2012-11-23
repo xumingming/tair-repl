@@ -19,7 +19,7 @@
 (def config-id (atom "b2bcomm-daily"))
 
 (def tair (atom (mk-tair @config-id)))
-(.init @tair)
+
 
 (defn set-namespace
   "Sets the tair namespace you want to operate in."
@@ -59,6 +59,9 @@
 (defn get-classloader []
   (.getClassLoader Compiler))
 
+(defn get-classpath []
+  (-> (get-classloader) dp/all-classpath-urls))
+
 (defn copy-jar [jar]
   ;; mk the ~/.tair-repl dir
   (when (not (fs/exists? (fs/expand-home "~/.tair-repl")))
@@ -70,11 +73,13 @@
     (fs/copy (fs/absolute-path from-path) (fs/absolute-path to-path))
     (fs/absolute-path to-path)))
 
-(defn add-jar [path]
+(defn add-jar0 [path]
   (let [classloader (get-classloader)]
-    ;; copy the jar to ~/.tair-repl
-    (let [real-path (copy-jar path)]
-      (dp/add-classpath-url classloader (URL. (str "file:" path))))))
+    (dp/add-classpath-url classloader (URL. (str "file:" path)))))
+
+(defn add-jar [path]
+  (let [real-path (copy-jar path)]
+    (add-jar0 real-path)))
 
 (defn- object-to-json [obj]
   (JSON/toJSON obj))
@@ -83,3 +88,11 @@
   (-> obj object-to-json .toString
           (.replaceAll "\"" "'")))
 
+
+;; init tair
+(.init @tair)
+
+;; add the jar in ~/.tair-repl to the classpath
+(let [jars (fs/list-dir (fs/expand-home "~/.tair-repl"))]
+  (doseq [jar jars]
+    (add-jar0 (fs/expand-home (str "~/.tair-repl/" jar)))))
