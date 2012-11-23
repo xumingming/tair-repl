@@ -46,6 +46,8 @@ cd tair-repl && lein deps && lein repl
 
 ;; then you query it, you will get a readable string representation
 ;; for the object rather than something like "serialize error"
+;; Clojure User: this "string representation" is actually a map
+;;               so you can process it as you wish!
 (query "key-for-a-object")
 ;; {"name" "james", "age" 20}
 ```
