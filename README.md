@@ -23,7 +23,7 @@ git clone https://github.com/xumingming/tair-repl.git
 * Fetch the dependencies and run: 
 
 ``` bash
-lein deps && lein repl
+cd tair-repl && lein deps && lein repl
 ```
 
 * For the commands to use, have a look at the `Usage` section 
