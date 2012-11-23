@@ -9,6 +9,7 @@ A Simple REPL for taobao tair.
 ``` bash
 git clone https://github.com/xumingming/tair-repl.git
 ```
+
 * Add `Clojars.org` to your `~/.m2/settings.xml`
 ``` xml
 <repository>
@@ -16,10 +17,12 @@ git clone https://github.com/xumingming/tair-repl.git
   <url>http://clojars.org/repo</url>
 </repository>
 ```
+
 * Fetch the dependencies and run: 
 ``` bash
 lein deps && lein repl
 ```
+
 * For the commands to use, have a look at the `Usage` section 
 
 # Usage
