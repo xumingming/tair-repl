@@ -6,11 +6,13 @@ A Simple REPL for taobao tair.
 
 * Install [leiningen](https://github.com/technomancy/leiningen)
 * Clone the repo: 
+
 ``` bash
 git clone https://github.com/xumingming/tair-repl.git
 ```
 
 * Add `Clojars.org` to your `~/.m2/settings.xml`
+
 ``` xml
 <repository>
   <id>clojars.org</id>
@@ -19,6 +21,7 @@ git clone https://github.com/xumingming/tair-repl.git
 ```
 
 * Fetch the dependencies and run: 
+
 ``` bash
 lein deps && lein repl
 ```
