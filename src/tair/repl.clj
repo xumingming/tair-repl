@@ -85,8 +85,7 @@
   (JSON/toJSON obj))
 
 (defn pretify-result [obj]
-  (-> obj object-to-json .toString
-          (.replaceAll "\"" "'")))
+  (-> obj object-to-json (#(into {} %))))
 
 
 ;; init tair
