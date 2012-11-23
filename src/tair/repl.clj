@@ -3,7 +3,8 @@
            [com.taobao.tair.impl.mc MultiClusterTairManager]
            [com.alibaba.fastjson JSON]
            [java.net URL])
-  (:require [dynapath.util :as dp]))
+  (:require [dynapath.util :as dp]
+            [fs.core :as fs]))
 
 (defn mk-tair [config-id]
   (let [tair (MultiClusterTairManager.)
@@ -58,9 +59,22 @@
 (defn get-classloader []
   (.getClassLoader Compiler))
 
+(defn copy-jar [jar]
+  ;; mk the ~/.tair-repl dir
+  (when (not (fs/exists? (fs/expand-home "~/.tair-repl")))
+    (fs/mkdir (fs/expand-home "~/.tair-repl")))
+  (let [from-path (fs/expand-home jar)
+        to-path (fs/expand-home (str "~/.tair-repl/" (fs/base-name jar)))]
+    (println "from-path:" from-path)
+    (println "to-path:" to-path)
+    (fs/copy (fs/absolute-path from-path) (fs/absolute-path to-path))
+    (fs/absolute-path to-path)))
+
 (defn add-jar [path]
   (let [classloader (get-classloader)]
-    (dp/add-classpath-url classloader (URL. (str "file:" path)))))
+    ;; copy the jar to ~/.tair-repl
+    (let [real-path (copy-jar path)]
+      (dp/add-classpath-url classloader (URL. (str "file:" path))))))
 
 (defn- object-to-json [obj]
   (JSON/toJSON obj))
