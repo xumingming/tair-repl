@@ -50,6 +50,9 @@ cd tair-repl && lein deps && lein repl
 ;;               so you can process it as you wish!
 (query "key-for-an-object")
 ;; {"name" "james", "age" 20}
+
+;; At last, the help command:
+(help)                  ;; show the help text
 ```
 
 
