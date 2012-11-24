@@ -54,6 +54,25 @@
   "Delete something from @tair."
   (.delete @tair @tnamespace key))
 
+(defn env
+  "Show the current settings."
+  []
+  (println "Current settings:")
+  (println "\tconfig-id:" @config-id)
+  (println "\tnamespace:" @tnamespace))
+
+(defn help
+  "Prints helps"
+  []
+  (let [help-text
+        "\t\t (set-config-id 'ldbcomm')      -- set your config-id
+         (set-namespace 89)             -- set your namespace
+         (query 'key')                  -- query something from tair
+         (put 'key' 'value')            -- put something into tair
+         (delete 'key')                 -- delete something from tair
+         (add-jar '/tmp/test.jar')      -- add a jar into classpath (if you have put an object into tair) "]
+    (println (.replaceAll help-text "'" "\""))))
+
 (defn get-classloader []
   (.getClassLoader Compiler))
 
