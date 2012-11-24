@@ -1,6 +1,6 @@
 # tair-repl
 
-A Simple REPL for taobao tair.
+A simple REPL for taobao [tair](https://github.com/taobao/tair).
 
 # Install
 
