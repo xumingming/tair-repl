@@ -7,10 +7,8 @@
             [fs.core :as fs]))
 
 (defn mk-tair [config-id]
-  (let [tair (MultiClusterTairManager.)
-        _ (doto tair (.setConfigID config-id)
-                (.setDynamicConfig true))]
-    tair))
+  (doto (MultiClusterTairManager.)  (.setConfigID config-id)
+        (.setDynamicConfig true)))
 
 (def default-expire-time 86400)
 
