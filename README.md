@@ -38,7 +38,7 @@ cd tair-repl && lein deps && lein repl
 (delete "key")          ;; delete something from tair
 (set-namespace 99)      ;; change the namespace you want to operate in
 (set-config-id "xxx")   ;; change the config-id of your tair
-;; if you have put an Java Object into the cache, you can add the jar 
+;; if you have put a Java Object into the cache, you can add the jar 
 ;; which defines the Java class to tair-repl's classpath
 (add-jar "/tmp/test.jar")
 (put "key-for-an-object" (doto (Person.) (.setName "james") (.setAge 20)))
@@ -48,7 +48,7 @@ cd tair-repl && lein deps && lein repl
 ;; for the object rather than something like "serialize error"
 ;; Clojure User: this "string representation" is actually a map
 ;;               so you can process it as you wish!
-(query "key-for-a-object")
+(query "key-for-an-object")
 ;; {"name" "james", "age" 20}
 ```
 
