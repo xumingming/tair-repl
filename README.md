@@ -51,6 +51,8 @@ cd tair-repl && lein deps && lein repl
 (query "key-for-an-object")
 ;; {"name" "james", "age" 20}
 
+(env)                   ;; show the current value of `namespace` and `config-id`
+
 ;; At last, the help command:
 (help)                  ;; show the help text
 ```
