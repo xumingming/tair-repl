@@ -68,9 +68,11 @@
         "\t\t (set-config-id 'ldbcomm')      -- set your config-id
          (set-namespace 89)             -- set your namespace
          (query 'key')                  -- query something from tair
-         (put 'key' 'value')            -- put something into tair
+         (put 'key' 'value')            -- put something into tair(expire in 24hr)
+         (put 'key' 'value' 120)        -- put something into tair(expire in 2min)
          (delete 'key')                 -- delete something from tair
-         (add-jar '/tmp/test.jar')      -- add a jar into classpath (if you have put an object into tair) "]
+         (add-jar '/tmp/test.jar')      -- add a jar into classpath (if you have put an object into tair)
+         (env)                          -- show the current value of config-id and namespace"]
     (println (.replaceAll help-text "'" "\""))))
 
 (defn get-classloader []
