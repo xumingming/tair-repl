@@ -31,7 +31,7 @@ cd tair-repl && lein deps && lein repl
 # Usage
 
 ``` clojure
-(use 'tair.repl)
+(use 'tair.repl)        ;; load the enviroment THIS STEP IS REQUIRED
 (put "key" "value")     ;; put something into tair with default expire time(24hr)
 (put "key" "value" 24)  ;; put something into tair with expire time of 24 seconds
 (query "key")           ;; get something from tair
