@@ -4,7 +4,8 @@
            [com.alibaba.fastjson JSON]
            [java.net URL])
   (:require [dynapath.util :as dp]
-            [fs.core :as fs]))
+            [fs.core :as fs]
+            [clojure.pprint :as pprint]))
 
 (defn mk-tair [config-id]
   (doto (MultiClusterTairManager.)  (.setConfigID config-id)
@@ -34,14 +35,15 @@
 (defn query
   "Query the specified key in the @tnamespace"
   [key]
-  (let [obj (.get @tair @tnamespace key)]
-    (if (and (not (nil? obj))
-             (not (nil? (-> obj .getValue)))
-             (not (nil? (-> obj .getValue .getValue))))
-      (-> obj .getValue
-          .getValue
-          pretify-result)
-      nil)))
+  (let [obj (.get @tair @tnamespace key)
+        obj (if (and (not (nil? obj))
+                     (not (nil? (-> obj .getValue)))
+                     (not (nil? (-> obj .getValue .getValue))))
+              (-> obj .getValue
+                  .getValue
+                  pretify-result)
+              nil)]
+    (pprint/pprint obj)))
 
 (defn put
   "put something into @tair"
