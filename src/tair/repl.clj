@@ -2,10 +2,12 @@
   (:import [com.taobao.tair TairManager]
            [com.taobao.tair.impl.mc MultiClusterTairManager]
            [com.alibaba.fastjson JSON]
-           [java.net URL])
+           [java.net URL]
+           [java.util Map List])
   (:require [dynapath.util :as dp]
             [fs.core :as fs]
-            [clojure.pprint :as pprint]))
+            [clojure.pprint :as pprint]
+            [clojure.walk :as walk]))
 
 (defn mk-tair [config-id]
   (doto (MultiClusterTairManager.)  (.setConfigID config-id)
@@ -105,8 +107,15 @@
 (defn- object-to-json [obj]
   (JSON/toJSON obj))
 
+(defn clojurify-structure [s]
+  (walk/prewalk (fn [x]
+              (cond (instance? Map x) (into {} x)
+                    (instance? List x) (vec x)
+                    true x))
+           s))
+
 (defn pretify-result [obj]
-  (-> obj object-to-json (#(into {} %))))
+  (-> obj object-to-json clojurify-structure))
 
 
 ;; init tair
