@@ -34,16 +34,13 @@
 (defn help
   "Prints helps"
   []
-  (let [help-text
-        "\t\t (set-config-id 'ldbcomm')      -- set your config-id
-         (set-namespace 89)             -- set your namespace
-         (query 'key')                  -- query something from tair
-         (put 'key' 'value')            -- put something into tair(expire in 24hr)
-         (put 'key' 'value' 120)        -- put something into tair(expire in 2min)
-         (delete 'key')                 -- delete something from tair
-         (add-jar '/tmp/test.jar')      -- add a jar into classpath (if you have put an object into tair)
-         (env)                          -- show the current value of config-id and namespace"]
-    (println (.replaceAll help-text "'" "\""))))
+  (println "\t set-config-id <config-id>        -- set config-id")
+  (println "\t set-namespace <namespace>        -- set namespace")
+  (println "\t put <key> <value> [<value-type>] -- put something into tair")
+  (println "\t query <key>                      -- query something from tair")
+  (println "\t delete <key>                     -- delete something from tair")
+  (println "\t settings                         -- show the current settings")
+  (println "\t add-jar <path-to-jar>            -- add a jar file to the classpath(if you need to put an object into tair)"))
 
 (defn get-classloader []
   (.getClassLoader Compiler))
@@ -102,7 +99,7 @@
                   (pprint/pprint ret))
         "delete" (let [key (first argv)]
                    (delete @tair @tnamespace key))
-        "env"    (env)
+        "settings"    (env)
         "exit" (System/exit 0)
         (help)))
     (catch Throwable e
