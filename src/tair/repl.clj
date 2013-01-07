@@ -2,7 +2,10 @@
   (:import [java.net URL])
   (:use [tair.core])
   (:require [dynapath.util :as dp]
-            [fs.core :as fs]))
+            [fs.core :as fs]
+            [clojure.string :as string]
+            [colorize.core :as color]
+            [clojure.pprint :as pprint]))
 
 (def tnamespace (atom 89))
 (def version (atom 0))
@@ -75,3 +78,36 @@
 (let [jars (fs/list-dir (fs/expand-home "~/.tair-repl"))]
   (doseq [jar jars]
     (add-jar0 (fs/expand-home (str "~/.tair-repl/" jar)))))
+
+;; the MAIN loop
+(loop [input "help"]
+  (try
+    (let [argv (string/split input #" ")
+          command (first argv)
+          argv (rest argv)]
+      (condp = command
+        "put"   (let [key (first argv)
+                      value (second argv)
+                      value-type (if (> (count argv) 2)
+                                   (nth argv 2)
+                                   nil)
+                      value (condp = value-type
+                              "int" (Integer/valueOf value)
+                              "long" (Long/valueOf value)
+                              value)
+                      ]
+                  (put @tair @tnamespace key value))
+        "query" (let [key (first argv)
+                      ret (query @tair @tnamespace key)]
+                  (pprint/pprint ret))
+        "delete" (let [key (first argv)]
+                   (delete @tair @tnamespace key))
+        "env"    (env)
+        "exit" (System/exit 0)
+        (help)))
+    (catch Throwable e
+      (println "ERROR: " e)))
+
+  (print (str " => "))
+  (flush)
+  (recur (read-line)))
