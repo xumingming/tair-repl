@@ -1,26 +1,14 @@
 (ns tair.repl
-  (:import [com.taobao.tair TairManager]
-           [com.taobao.tair.impl.mc MultiClusterTairManager]
-           [com.alibaba.fastjson JSON]
-           [java.net URL]
-           [java.util Map List])
+  (:import [java.net URL])
+  (:use [tair.core])
   (:require [dynapath.util :as dp]
-            [fs.core :as fs]
-            [clojure.pprint :as pprint]
-            [clojure.walk :as walk]))
-
-(defn mk-tair [config-id]
-  (doto (MultiClusterTairManager.)  (.setConfigID config-id)
-        (.setDynamicConfig true)))
-
-(def default-expire-time 86400)
+            [fs.core :as fs]))
 
 (def tnamespace (atom 89))
 (def version (atom 0))
 (def config-id (atom "b2bcomm-daily"))
 
 (def tair (atom (mk-tair @config-id)))
-
 
 (defn set-namespace
   "Sets the tair namespace you want to operate in."
@@ -32,31 +20,6 @@
   (reset! config-id new-config-id)
   (reset! tair (mk-tair @config-id))
   (.init @tair))
-
-(declare pretify-result)
-(defn query
-  "Query the specified key in the @tnamespace"
-  [key]
-  (let [obj (.get @tair @tnamespace key)
-        obj (if (and (not (nil? obj))
-                     (not (nil? (-> obj .getValue)))
-                     (not (nil? (-> obj .getValue .getValue))))
-              (-> obj .getValue
-                  .getValue
-                  pretify-result)
-              nil)]
-    (pprint/pprint obj)))
-
-(defn put
-  "put something into @tair"
-  ([key value]
-     (put key value default-expire-time))
-  ([key value expire-time]
-     (.put @tair @tnamespace key value @version expire-time)))
-
-(defn delete [key]
-  "Delete something from @tair."
-  (.delete @tair @tnamespace key))
 
 (defn env
   "Show the current settings."
@@ -103,19 +66,6 @@
 (defn add-jar [path]
   (let [real-path (copy-jar path)]
     (add-jar0 real-path)))
-
-(defn- object-to-json [obj]
-  (JSON/toJSON obj))
-
-(defn clojurify-structure [s]
-  (walk/prewalk (fn [x]
-              (cond (instance? Map x) (into {} x)
-                    (instance? List x) (vec x)
-                    true x))
-           s))
-
-(defn pretify-result [obj]
-  (-> obj object-to-json clojurify-structure))
 
 
 ;; init tair
