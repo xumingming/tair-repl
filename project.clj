@@ -6,4 +6,5 @@
                  [clj-tair "1.0.0-SNAPSHOT"]
                  [dynapath "0.2.0"]
                  [fs "1.3.2"]
-                 [colorize "0.1.1"]])
+                 [colorize "0.1.1"]
+                 [jline "2.9"]])
