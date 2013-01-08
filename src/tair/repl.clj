@@ -83,6 +83,14 @@
           command (first argv)
           argv (rest argv)]
       (condp = command
+        "set-config-id" (let [new-config-id (first argv)]
+                          (set-config-id new-config-id)
+                          (println "Config-id set to " new-config-id))
+        
+        "set-namespace" (let [new-namespace (first argv)]
+                          (set-namespace new-namespace)
+                          (println "namespace set to " new-namespace))
+        
         "put"   (let [key (first argv)
                       value (second argv)
                       value-type (if (> (count argv) 2)
@@ -94,12 +102,20 @@
                               value)
                       ]
                   (put @tair @tnamespace key value))
+        
         "query" (let [key (first argv)
                       ret (query @tair @tnamespace key)]
                   (pprint/pprint ret))
+        
         "delete" (let [key (first argv)]
                    (delete @tair @tnamespace key))
+        
         "settings"    (env)
+
+        "add-jar" (let [jar (first argv)]
+                    (add-jar jar)
+                    (println "Added jar" jar " to the classpath."))
+        
         "exit" (System/exit 0)
         (help)))
     (catch Throwable e
