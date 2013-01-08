@@ -42,11 +42,12 @@
            result-code (clojurify-result-code result-code)]
        result-code)))
 
-
 (defn delete
   "Delete the specified key from tair"
   [tair namespace key]
-  (.delete tair namespace key))
+  (let [result-code (.delete tair namespace key)
+        result-code (clojurify-result-code result-code)]
+    result-code))
 
 (defn- object-to-json [obj]
   (JSON/toJSON obj))

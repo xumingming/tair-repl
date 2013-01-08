@@ -109,8 +109,11 @@
                       ret (query @tair @tnamespace key)]
                   (pprint/pprint ret))
         
-        "delete" (let [key (first argv)]
-                   (delete @tair @tnamespace key))
+        "delete" (let [key (first argv)
+                       result-code (delete @tair @tnamespace key)]
+                   (if (= (:code result-code) 0)
+                     (println "SUCCESS!")
+                     (println "FAIL! code:" (:code result-code) ", message:" (:message result-code))))
         
         "settings"    (env)
 
