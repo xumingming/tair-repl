@@ -1,6 +1,6 @@
 # tair-repl
 
-A simple REPL for taobao [tair](https://github.com/taobao/tair).
+A commandline client for taobao [Tair](https://github.com/taobao/tair).
 
 # Install
 
