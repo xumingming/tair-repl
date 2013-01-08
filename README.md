@@ -4,7 +4,7 @@ A simple REPL for taobao [tair](https://github.com/taobao/tair).
 
 # Install
 
-* Download this [jar](https://github.com/xumingming/tair-repl/raw/master/dist/tair-repl-1.0.0-SNAPSHOT-standalone.jar)
+* Download this [jar](http://clojars.org/repo/tair-repl/tair-repl/1.0.0-SNAPSHOT/tair-repl-1.0.0-20130108.113042-1.jar)
 * Run:
 
 ``` bash
