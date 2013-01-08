@@ -88,7 +88,7 @@
                           (set-config-id new-config-id)
                           (println "Config-id set to " new-config-id))
         
-        "set-namespace" (let [new-namespace (first argv)]
+        "set-namespace" (let [new-namespace (Integer/valueOf (first argv))]
                           (set-namespace new-namespace)
                           (println "namespace set to " new-namespace))
         
