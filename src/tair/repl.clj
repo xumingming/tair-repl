@@ -100,8 +100,10 @@
                               "int" (Integer/valueOf value)
                               "long" (Long/valueOf value)
                               value)
-                      ]
-                  (put @tair @tnamespace key value))
+                      result-code (put @tair @tnamespace key value)]
+                  (if (= (:code result-code) 0)
+                    (println "SUCCESS!")
+                    (println "FAIL! code:" (:code result-code) ", message:" (:message result-code))))
         
         "query" (let [key (first argv)
                       ret (query @tair @tnamespace key)]
