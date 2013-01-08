@@ -117,6 +117,10 @@
                     (println "Added jar" jar " to the classpath."))
         
         "exit" (System/exit 0)
+
+        ;; if command is empty, do nothing
+        ""  (print)
+        
         (help)))
     (catch Throwable e
       (println "ERROR: " e)))
