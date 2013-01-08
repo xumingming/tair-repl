@@ -85,7 +85,9 @@
 
   (loop [input "help"]
     (try
-      (let [argv (string/split input #" ")
+      (let [argv (if (nil? input)
+                   ["exit"]
+                   (string/split input #" "))
             command (first argv)
             argv (rest argv)]
         (condp = command
