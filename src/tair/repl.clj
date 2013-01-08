@@ -8,8 +8,7 @@
   (:require [dynapath.util :as dp]
             [fs.core :as fs]
             [clojure.string :as string]
-            [colorize.core :as color]
-            [clojure.pprint :as pprint])
+            [colorize.core :as color])
   (:gen-class))
 
 (def tnamespace (atom 652))
@@ -140,7 +139,7 @@
                     (jprintln "get expects 1 arg," (count argv) "given.")
                     (let [key (first argv)
                           ret (get @tair @tnamespace key)]
-                      (pprint/pprint ret)))
+                      (jprintln ret)))
         
             "delete" (if (not= (count argv) 1)
                        (jprintln "delete expects 1 arg," (count argv) "given.")
