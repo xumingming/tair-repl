@@ -8,9 +8,9 @@
             [colorize.core :as color]
             [clojure.pprint :as pprint]))
 
-(def tnamespace (atom 89))
+(def tnamespace (atom 652))
 (def version (atom 0))
-(def config-id (atom "b2bcomm-daily"))
+(def config-id (atom "ldbcommon-daily"))
 
 (def tair (atom (mk-tair @config-id)))
 
@@ -129,7 +129,8 @@
         
         (help)))
     (catch Throwable e
-      (println "ERROR: " e)))
+      (println "ERROR: " e)
+      (.printStackTrace e)))
 
   (print (str " => "))
   (flush)
