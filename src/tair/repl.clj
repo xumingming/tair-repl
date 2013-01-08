@@ -1,6 +1,9 @@
 (ns tair.repl
   (:refer-clojure :exclude [get])
   (:import [java.net URL])
+  (:import [java.io PrintWriter])
+  (:import [jline.console ConsoleReader])
+  (:import [jline.console.completer StringsCompleter])
   (:use [tair.core])
   (:require [dynapath.util :as dp]
             [fs.core :as fs]
@@ -83,67 +86,83 @@
     (doseq [jar jars]
       (add-jar0 (fs/expand-home (str "~/.tair-repl/" jar)))))
 
-  (loop [input "help"]
-    (try
-      (let [argv (if (nil? input)
-                   ["exit"]
-                   (string/split input #" "))
-            command (first argv)
-            argv (rest argv)]
-        (condp = command
-          "set-config-id" (let [new-config-id (first argv)]
-                            (set-config-id new-config-id)
-                            (println "Config-id set to " new-config-id))
+  (let [^StringsCompleter completer (StringsCompleter. (into-array String ["set-config-id"
+                                                                           "set-namespace"
+                                                                           "put"
+                                                                           "get"
+                                                                           "delete"
+                                                                           "settings"
+                                                                           "add-jar"
+                                                                           "exit"]))
+        ^ConsoleReader reader (doto (ConsoleReader.)
+                                (.setPrompt " => ")
+                                (.addCompleter completer))
+        ^PrintWriter out (PrintWriter. (.getOutput reader))
+        jprintln (fn [& args]
+                   (let [msg (string/join " " args)]
+                     (.println out msg)))
+        jprint (fn [& args]
+                 (let [msg (string/join " " args)]
+                   (.print out msg)))]
+    (loop [input "help"]
+      (try
+        (let [argv (if (nil? input)
+                     ["exit"]
+                     (string/split input #" "))
+              command (first argv)
+              argv (rest argv)]
+          (condp = command
+            "set-config-id" (let [new-config-id (first argv)]
+                              (set-config-id new-config-id)
+                              (jprintln "Config-id set to " new-config-id))
         
-          "set-namespace" (let [new-namespace (Integer/valueOf (first argv))]
-                            (set-namespace new-namespace)
-                            (println "namespace set to " new-namespace))
+            "set-namespace" (let [new-namespace (Integer/valueOf (first argv))]
+                              (set-namespace new-namespace)
+                              (jprintln "namespace set to " new-namespace))
         
-          "put"   (if (< (count argv) 2)
-                    (println "put expects at least 2 args," (count argv) "given.")
+            "put"   (if (< (count argv) 2)
+                      (jprintln "put expects at least 2 args," (count argv) "given.")
+                      (let [key (first argv)
+                            value (second argv)
+                            value-type (if (> (count argv) 2)
+                                         (nth argv 2)
+                                         nil)
+                            value (condp = value-type
+                                    "int" (Integer/valueOf value)
+                                    "long" (Long/valueOf value)
+                                    value)
+                            result-code (put @tair @tnamespace key value)]
+                        (if (= (:code result-code) 0)
+                          (jprintln "SUCCESS!")
+                          (jprintln "FAIL! code:" (:code result-code) ", message:" (:message result-code)))))
+        
+            "get" (if (not= (count argv) 1)
+                    (jprintln "get expects 1 arg," (count argv) "given.")
                     (let [key (first argv)
-                          value (second argv)
-                          value-type (if (> (count argv) 2)
-                                       (nth argv 2)
-                                       nil)
-                          value (condp = value-type
-                                  "int" (Integer/valueOf value)
-                                  "long" (Long/valueOf value)
-                                  value)
-                          result-code (put @tair @tnamespace key value)]
-                      (if (= (:code result-code) 0)
-                        (println "SUCCESS!")
-                        (println "FAIL! code:" (:code result-code) ", message:" (:message result-code)))))
+                          ret (get @tair @tnamespace key)]
+                      (pprint/pprint ret)))
         
-          "get" (if (not= (count argv) 1)
-                  (println "get expects 1 arg," (count argv) "given.")
-                  (let [key (first argv)
-                        ret (get @tair @tnamespace key)]
-                    (pprint/pprint ret)))
+            "delete" (if (not= (count argv) 1)
+                       (jprintln "delete expects 1 arg," (count argv) "given.")
+                       (let [key (first argv)
+                             result-code (delete @tair @tnamespace key)]
+                         (if (= (:code result-code) 0)
+                           (jprintln "SUCCESS!")
+                           (jprintln "FAIL! code:" (:code result-code) ", message:" (:message result-code)))))
         
-          "delete" (if (not= (count argv) 1)
-                     (println "delete expects 1 arg," (count argv) "given.")
-                     (let [key (first argv)
-                           result-code (delete @tair @tnamespace key)]
-                       (if (= (:code result-code) 0)
-                         (println "SUCCESS!")
-                         (println "FAIL! code:" (:code result-code) ", message:" (:message result-code)))))
-        
-          "settings"    (env)
+            "settings"    (env)
 
-          "add-jar" (let [jar (first argv)]
-                      (add-jar jar))
+            "add-jar" (let [jar (first argv)]
+                        (add-jar jar))
         
-          "exit" (System/exit 0)
+            "exit" (System/exit 0)
 
-          ;; if command is empty, do nothing
-          ""  (print)
+            ;; if command is empty, do nothing
+            ""  (jprint)
         
-          (help)))
-      (catch Throwable e
-        (println "ERROR: " e)
-        (.printStackTrace e)))
+            (help)))
+        (catch Throwable e
+          (jprintln "ERROR: " e)
+          (.printStackTrace e)))
 
-    (print (str " => "))
-    (flush)
-    (recur (read-line))))
+      (recur (.readLine reader)))))
