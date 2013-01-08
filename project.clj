@@ -2,8 +2,7 @@
   :description "Tair Repl"
   :main tair.repl
   :dependencies [[org.clojure/clojure "1.3.0"]
-                 [com.taobao.tair/tair-mc-client "1.0.4.7"]
-                 [com.alibaba.platform.shared/fastjson "1.1.10"]
+                 [clj-tair "1.0.0-SNAPSHOT"]
                  [dynapath "0.2.0"]
                  [fs "1.3.2"]
                  [colorize "0.1.1"]])

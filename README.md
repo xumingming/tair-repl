@@ -30,30 +30,6 @@ cd tair-repl && lein deps && lein repl
 
 # Usage
 
-``` clojure
-(use 'tair.repl)        ;; load the enviroment THIS STEP IS REQUIRED
-(put "key" "value")     ;; put something into tair with default expire time(24hr)
-(put "key" "value" 24)  ;; put something into tair with expire time of 24 seconds
-(query "key")           ;; get something from tair
-(delete "key")          ;; delete something from tair
-(set-namespace 99)      ;; change the namespace you want to operate in
-(set-config-id "xxx")   ;; change the config-id of your tair
-;; if you have put a Java Object into the cache, you can add the jar 
-;; which defines the Java class to tair-repl's classpath
-(add-jar "/tmp/test.jar")
-(put "key-for-an-object" (doto (Person.) (.setName "james") (.setAge 20)))
-;; #<ResultCode code=0, msg=success>
-
-;; then you query it, you will get a readable string representation
-;; for the object rather than something like "serialize error"
-(query "key-for-an-object")
-;; {"name" "james", "age" 20}
-
-(env)                   ;; show the current value of `namespace` and `config-id`
-
-;; At last, the help command:
-(help)                  ;; show the help text
-```
 
 
 # License
