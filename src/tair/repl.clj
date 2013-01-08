@@ -55,8 +55,6 @@
     (fs/mkdir (fs/expand-home "~/.tair-repl")))
   (let [from-path (fs/expand-home jar)
         to-path (fs/expand-home (str "~/.tair-repl/" (fs/base-name jar)))]
-    (println "from-path:" from-path)
-    (println "to-path:" to-path)
     (fs/copy (fs/absolute-path from-path) (fs/absolute-path to-path))
     (fs/absolute-path to-path)))
 
@@ -65,8 +63,14 @@
     (dp/add-classpath-url classloader (URL. (str "file:" path)))))
 
 (defn add-jar [path]
-  (let [real-path (copy-jar path)]
-    (add-jar0 real-path)))
+  (let [path (fs/absolute-path (fs/expand-home path))
+        jars (if (fs/directory? path)
+               (map #(str path "/" %) (fs/list-dir path))
+               [path])]
+    (doseq [jar jars
+            :let [real-path (copy-jar jar)]]
+      (add-jar0 real-path)
+      (println "Added jar" jar "to the classpath."))))
 
 
 ;; init tair
@@ -119,8 +123,7 @@
         "settings"    (env)
 
         "add-jar" (let [jar (first argv)]
-                    (add-jar jar)
-                    (println "Added jar" jar " to the classpath."))
+                    (add-jar jar))
         
         "exit" (System/exit 0)
 
