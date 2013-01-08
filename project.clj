@@ -1,6 +1,7 @@
 (defproject tair-repl "1.0.0-SNAPSHOT"
   :description "Tair Repl"
   :main tair.repl
+  :aot :all
   :dependencies [[org.clojure/clojure "1.3.0"]
                  [clj-tair "1.0.0-SNAPSHOT"]
                  [dynapath "0.2.0"]

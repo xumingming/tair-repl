@@ -6,7 +6,8 @@
             [fs.core :as fs]
             [clojure.string :as string]
             [colorize.core :as color]
-            [clojure.pprint :as pprint]))
+            [clojure.pprint :as pprint])
+  (:gen-class))
 
 (def tnamespace (atom 652))
 (def version (atom 0))
@@ -72,69 +73,69 @@
       (add-jar0 real-path)
       (println "Added jar" jar "to the classpath."))))
 
-
-;; init tair
-(.init @tair)
-
-;; add the jar in ~/.tair-repl to the classpath
-(let [jars (fs/list-dir (fs/expand-home "~/.tair-repl"))]
-  (doseq [jar jars]
-    (add-jar0 (fs/expand-home (str "~/.tair-repl/" jar)))))
-
 ;; the MAIN loop
-(loop [input "help"]
-  (try
-    (let [argv (string/split input #" ")
-          command (first argv)
-          argv (rest argv)]
-      (condp = command
-        "set-config-id" (let [new-config-id (first argv)]
-                          (set-config-id new-config-id)
-                          (println "Config-id set to " new-config-id))
+(defn -main []
+  ;; init tair
+  (.init @tair)
+
+  ;; add the jar in ~/.tair-repl to the classpath
+  (let [jars (fs/list-dir (fs/expand-home "~/.tair-repl"))]
+    (doseq [jar jars]
+      (add-jar0 (fs/expand-home (str "~/.tair-repl/" jar)))))
+
+  (loop [input "help"]
+    (try
+      (let [argv (string/split input #" ")
+            command (first argv)
+            argv (rest argv)]
+        (condp = command
+          "set-config-id" (let [new-config-id (first argv)]
+                            (set-config-id new-config-id)
+                            (println "Config-id set to " new-config-id))
         
-        "set-namespace" (let [new-namespace (Integer/valueOf (first argv))]
-                          (set-namespace new-namespace)
-                          (println "namespace set to " new-namespace))
+          "set-namespace" (let [new-namespace (Integer/valueOf (first argv))]
+                            (set-namespace new-namespace)
+                            (println "namespace set to " new-namespace))
         
-        "put"   (let [key (first argv)
-                      value (second argv)
-                      value-type (if (> (count argv) 2)
-                                   (nth argv 2)
-                                   nil)
-                      value (condp = value-type
-                              "int" (Integer/valueOf value)
-                              "long" (Long/valueOf value)
-                              value)
-                      result-code (put @tair @tnamespace key value)]
-                  (if (= (:code result-code) 0)
-                    (println "SUCCESS!")
-                    (println "FAIL! code:" (:code result-code) ", message:" (:message result-code))))
+          "put"   (let [key (first argv)
+                        value (second argv)
+                        value-type (if (> (count argv) 2)
+                                     (nth argv 2)
+                                     nil)
+                        value (condp = value-type
+                                "int" (Integer/valueOf value)
+                                "long" (Long/valueOf value)
+                                value)
+                        result-code (put @tair @tnamespace key value)]
+                    (if (= (:code result-code) 0)
+                      (println "SUCCESS!")
+                      (println "FAIL! code:" (:code result-code) ", message:" (:message result-code))))
         
-        "get" (let [key (first argv)
+          "get" (let [key (first argv)
                       ret (get @tair @tnamespace key)]
                   (pprint/pprint ret))
         
-        "delete" (let [key (first argv)
-                       result-code (delete @tair @tnamespace key)]
-                   (if (= (:code result-code) 0)
-                     (println "SUCCESS!")
-                     (println "FAIL! code:" (:code result-code) ", message:" (:message result-code))))
+          "delete" (let [key (first argv)
+                         result-code (delete @tair @tnamespace key)]
+                     (if (= (:code result-code) 0)
+                       (println "SUCCESS!")
+                       (println "FAIL! code:" (:code result-code) ", message:" (:message result-code))))
         
-        "settings"    (env)
+          "settings"    (env)
 
-        "add-jar" (let [jar (first argv)]
-                    (add-jar jar))
+          "add-jar" (let [jar (first argv)]
+                      (add-jar jar))
         
-        "exit" (System/exit 0)
+          "exit" (System/exit 0)
 
-        ;; if command is empty, do nothing
-        ""  (print)
+          ;; if command is empty, do nothing
+          ""  (print)
         
-        (help)))
-    (catch Throwable e
-      (println "ERROR: " e)
-      (.printStackTrace e)))
+          (help)))
+      (catch Throwable e
+        (println "ERROR: " e)
+        (.printStackTrace e)))
 
-  (print (str " => "))
-  (flush)
-  (recur (read-line)))
+    (print (str " => "))
+    (flush)
+    (recur (read-line))))
