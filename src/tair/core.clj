@@ -19,7 +19,7 @@
 
 (defn get
   "Query the value of the specified key from the specified namespace."
-  [tair namespace key]
+  [^TairManager tair namespace key]
   (let [obj (.get tair namespace key)
         obj (if (and (not (nil? obj))
                      (not (nil? (-> obj .getValue)))
@@ -29,6 +29,23 @@
                   pretify-result)
               nil)]
     obj))
+
+(defn mget
+  "Batch get data from tair
+
+  tair: the tair manager
+  namespace: the namespace where the data is in
+  keys: a collection of keys to get"
+  [^TairManager tair namespace keys]
+  (let [ret (.mget tair namespace (vec keys))
+        ret (if (and (not (nil? ret))
+                     (not (nil? (-> ret .getValue)))
+                     (not (nil? (-> ret .getValue .getValue))))
+              (-> ret .getValue
+                  .getValue
+                  pretify-result)
+              nil)]
+    ret))
 
 (defn put
   "Put the key value pair into the specified namespace with the specified expiretime.
@@ -43,12 +60,50 @@
            result-code (clojurify-result-code result-code)]
        result-code)))
 
+(defn put-async
+  [tair namespace key value version expire-time fill-cache? callback]
+  nil)
+
 (defn delete
   "Delete the specified key from tair"
   [tair namespace key]
   (let [result-code (.delete tair namespace key)
         result-code (clojurify-result-code result-code)]
     result-code))
+
+(defn invalid
+  ([tair namespace key]
+     nil)
+  ([tair namespace key callmode]
+     nil))
+
+(defn hide
+  [tair namespace key]
+  nil)
+
+(defn hide-by-proxy
+  ([tair namespace key]
+     nil)
+  ([tair namespace key callmode]
+  nil))
+
+(defn get-hidden
+  [tair namespace key]
+  nil)
+
+(defn prefix-put
+  ([tair namespace pkey skey value] nil)
+  ([tair namespace pkey skey value version] nil)
+  ([tair namespace pkey skey value version expire-time] nil))
+
+(defn prefix-puts
+  [tair namespace pkey skey-value-pairs] nil)
+
+(defn prefix-delete
+  [tair namespace pkey skey] nil)
+
+(defn prefix-deletes
+  [tair namespace pkey skeys] nil)
 
 (defn- object-to-json [obj]
   (JSON/toJSON obj))
