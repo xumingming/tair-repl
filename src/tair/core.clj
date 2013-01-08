@@ -1,4 +1,5 @@
 (ns tair.core
+  (:refer-clojure :exclude [get])
   (:import [com.taobao.tair TairManager ResultCode]
            [com.taobao.tair.impl.mc MultiClusterTairManager]
            [com.alibaba.fastjson JSON]
@@ -16,7 +17,7 @@
      (doto (MultiClusterTairManager.) (.setConfigID config-id)
            (.setDynamicConfig dynamic?))))
 
-(defn query
+(defn get
   "Query the value of the specified key from the specified namespace."
   [tair namespace key]
   (let [obj (.get tair namespace key)

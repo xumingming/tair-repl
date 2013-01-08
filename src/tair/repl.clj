@@ -1,4 +1,5 @@
 (ns tair.repl
+  (:refer-clojure :exclude [get])
   (:import [java.net URL])
   (:use [tair.core])
   (:require [dynapath.util :as dp]
@@ -37,7 +38,7 @@
   (println "\t set-config-id <config-id>        -- set config-id")
   (println "\t set-namespace <namespace>        -- set namespace")
   (println "\t put <key> <value> [<value-type>] -- put something into tair")
-  (println "\t query <key>                      -- query something from tair")
+  (println "\t get <key>                        -- get something from tair")
   (println "\t delete <key>                     -- delete something from tair")
   (println "\t settings                         -- show the current settings")
   (println "\t add-jar <path-to-jar>            -- add a jar file to the classpath(if you need to put an object into tair)"))
@@ -105,8 +106,8 @@
                     (println "SUCCESS!")
                     (println "FAIL! code:" (:code result-code) ", message:" (:message result-code))))
         
-        "query" (let [key (first argv)
-                      ret (query @tair @tnamespace key)]
+        "get" (let [key (first argv)
+                      ret (get @tair @tnamespace key)]
                   (pprint/pprint ret))
         
         "delete" (let [key (first argv)
