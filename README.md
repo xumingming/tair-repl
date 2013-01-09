@@ -5,10 +5,12 @@ A commandline client for taobao [Tair](https://github.com/taobao/tair).
 # Install
 
 * Download this [jar](http://clojars.org/repo/tair-repl/tair-repl/1.0.0-SNAPSHOT/tair-repl-1.0.0-20130108.113042-1.jar)
+
+* Rename the downloaded jar name to `tair-repl.jar` [Actually this step is optional]
 * Run:
 
 ``` bash
-java -jar tair-repl-1.0.0-SNAPSHOT-standalone.jar
+java -jar tair-repl.jar
 ```
 
 # Usage
