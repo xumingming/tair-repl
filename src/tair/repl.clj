@@ -139,7 +139,9 @@
                     (jprintln "get expects 1 arg," (count argv) "given.")
                     (let [key (first argv)
                           ret (get @tair @tnamespace key)]
-                      (jprintln ret)))
+                      (if (nil? ret)
+                        (jprintln "<nil>")
+                        (jprintln ret))))
         
             "delete" (if (not= (count argv) 1)
                        (jprintln "delete expects 1 arg," (count argv) "given.")
